@@ -20,7 +20,7 @@ const handleCreateUser = (req, res) => {
 const handleListUsers = async (req, res) => {
   let users = [];
   users = await userService.getUsersList();
-  // console.log("check get users: ", users);
+  console.log("check get users: ", users);
   // render views
   return res.render("listUsers.ejs", { users: users });
 };
