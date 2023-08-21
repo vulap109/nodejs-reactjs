@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import mysql from "mysql2/promise";
-import db from '../models'
+import db from "../models";
+import { where } from "sequelize";
 
 const sqlExec = async (query, data = []) => {
   // create the connection
@@ -29,11 +30,24 @@ const createUser = async (email, password, userName) => {
   const result = await db.User.create({
     username: userName,
     email: email,
-    password: hashPass
-  })
+    password: hashPass,
+  });
 };
 
 const getUsersList = async () => {
+  //test relationship
+  let getUser = await db.User.findAll({
+    attributes: ["username", "email"],
+    where: { id: 1 },
+    include: {
+      model: db.Group,
+      attributes: ["name"],
+      include: { model: db.Role, attributes: ["url", "description"] },
+    },
+    raw: true,
+  });
+  console.log(">>> check get user relationship: ", getUser);
+
   let user = [];
   // const query = "SELECT * FROM users";
   // user = await sqlExec(query);
@@ -48,8 +62,8 @@ const deleteUser = async (id) => {
   // user = await sqlExec(query, data);
   user = await db.User.destroy({
     where: {
-      id: id
-    }
+      id: id,
+    },
   });
   return user;
 };
