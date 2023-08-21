@@ -1,19 +1,18 @@
 import bcrypt from "bcryptjs";
 import mysql from "mysql2/promise";
 import db from "../models";
-import { where } from "sequelize";
 
-const sqlExec = async (query, data = []) => {
-  // create the connection
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    database: "nodejs",
-  });
-  // query database
-  const [rows, fields] = await connection.execute(query, data);
-  return rows;
-};
+// const sqlExec = async (query, data = []) => {
+//   // create the connection
+//   const connection = await mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     database: "nodejs",
+//   });
+//   // query database
+//   const [rows, fields] = await connection.execute(query, data);
+//   return rows;
+// };
 
 const salt = bcrypt.genSaltSync(10);
 
