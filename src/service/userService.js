@@ -2,18 +2,6 @@ import bcrypt from "bcryptjs";
 import mysql from "mysql2/promise";
 import db from "../models";
 
-// const sqlExec = async (query, data = []) => {
-//   // create the connection
-//   const connection = await mysql.createConnection({
-//     host: "localhost",
-//     user: "root",
-//     database: "nodejs",
-//   });
-//   // query database
-//   const [rows, fields] = await connection.execute(query, data);
-//   return rows;
-// };
-
 const salt = bcrypt.genSaltSync(10);
 
 const hashPassword = (password) => {
@@ -23,17 +11,14 @@ const hashPassword = (password) => {
 
 const createUser = async (email, password, userName) => {
   let hashPass = hashPassword(password);
-  // const query = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
-  // const data = [userName, email, hashPass];
-  // const result = await sqlExec(query, data);
-  const result = await db.User.create({
+  await db.User.create({
     username: userName,
     email: email,
     password: hashPass,
   });
 };
 
-const getUsersList = async () => {
+const getAllUsersList = async () => {
   //test relationship
   let getUser = await db.User.findAll({
     attributes: ["username", "email"],
@@ -43,16 +28,15 @@ const getUsersList = async () => {
       attributes: ["name"],
       include: { model: db.Role, attributes: ["url", "description"] },
     },
-    raw: true,
   });
   console.log(">>> check get user relationship: ", getUser);
 
   let user = [];
-  // const query = "SELECT * FROM users";
-  // user = await sqlExec(query);
   user = await db.User.findAll();
   return user;
 };
+
+const getUserListPerPage = () => {};
 
 const deleteUser = async (id) => {
   let user = [];
@@ -70,6 +54,7 @@ const deleteUser = async (id) => {
 module.exports = {
   createUser,
   hashPassword,
-  getUsersList,
+  getAllUsersList,
+  getUserListPerPage,
   deleteUser,
 };
