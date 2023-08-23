@@ -44,6 +44,10 @@ const loginAPI = async (req, res) => {
 
     // call service registeruser
     let data = await userAPI.loginUser(req.body);
+    res.cookie("access_token", data.access_token, {
+      maxAge: 60 * 60 * 1000,
+      httpOnly: true,
+    });
     // return case success
     return res.status(200).json(data);
   } catch (error) {

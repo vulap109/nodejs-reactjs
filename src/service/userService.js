@@ -36,7 +36,38 @@ const getAllUsersList = async () => {
   return user;
 };
 
-const getUserListPerPage = () => {};
+const getUserListPerPage = async (page, limit) => {
+  try {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await db.User.findAndCountAll({
+      attributes: ["id", "username", "email", "address", "phone", "gender"],
+      include: {
+        model: db.Group,
+        attributes: ["name"],
+      },
+      offset: offset,
+      limit: limit,
+    });
+
+    const totalPages = Math.ceil(count / limit);
+    return {
+      result: true,
+      data: {
+        page: page,
+        perPage: limit,
+        totalRecord: count,
+        totalPages: totalPages,
+        usersList: rows,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      result: false,
+      message: "something wrong in service ...",
+    };
+  }
+};
 
 const deleteUser = async (id) => {
   let user = [];

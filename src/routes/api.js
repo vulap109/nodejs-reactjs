@@ -1,12 +1,13 @@
 import express from "express";
 import authControler from "../controler/AuthControler";
 import userControler from "../controler/UserControler";
+import { checkUserJWT } from "../middleWare/JWTAction";
 
 const router = express.Router();
 
 const initApiRoutes = (app) => {
   // test API
-  router.get("/test", authControler.testAPI);
+  router.get("/test", checkUserJWT, authControler.testAPI);
 
   router.post("/register", authControler.regesterAPI);
 
@@ -16,5 +17,9 @@ const initApiRoutes = (app) => {
 
   return app.use("/api/", router);
 };
+
+// const checkIsLoggedIn = (req, res, next) => {
+//   const noneSecurePaths = ["/", "/login"];
+// };
 
 export default initApiRoutes;
